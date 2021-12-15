@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
 const Paganation = props => {
   const { itemsCount, pageSize, currentPage, onPageChange } = props;
@@ -24,5 +25,12 @@ const Paganation = props => {
   </nav>
   );
 }
+
+Paganation.propTypes = {
+  itemsCount:PropTypes.number.isRequired,
+  pageSize:PropTypes.number.isRequired, 
+  currentPage:PropTypes.number.isRequired,
+  onPageChange:PropTypes.func.isRequired
+};
 
 export default Paganation;
