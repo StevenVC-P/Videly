@@ -1,15 +1,26 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService.js";
+import { getGenres } from "../services/fakeGenreService.js";
 import Like from "./common/like.jsx";
 import Pagnation from "./common/pagaination";
+import ListGroup from "./common/listgroup.jsx";
 import { paginate } from "../utils/paginate";
 
 class Movies extends Component {
     state = {
-        movies: getMovies(),
+        movies: [],
+        genres: [],
         pageSize: 4,
         currentPage: 1,
     };
+
+    componentDidMount() {
+        this.setState({movies:getMovies(), genres:getGenres()})
+    }
+
+    handleGenreSelect = genre => {
+        this.setState({ selectedGenre: genre });
+    }
 
     handleDelete = movie => {
         console.log(movie)
@@ -40,40 +51,49 @@ class Movies extends Component {
         const movies = paginate(allMovies, currentPage, pageSize)  
             
         return(
-            <React.Fragment>
-                <p>Showing {count} movies in the database.</p>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Genre</th>
-                            <th>Stock</th>
-                            <th>Rate</th>
-                            <th />
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { movies.map(movie => (
-                        <tr key={movie._id}>
-                            <td>{movie.title}</td>
-                            <td>{movie.genre.name}</td>
-                            <td>{movie.numberInStock}</td>
-                            <td>{movie.numberInStock}</td>
-                            <td><Like liked={movie.liked} onClick={() => this.handleLike(movie)} /></td>
-                            <button className = "btn btn-danger btn-sm"
-                            onClick={() => this.handleDelete(movie)}>Delete</button>
-                        </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <Pagnation
-                    itemsCount={count}
-                    pageSize={pageSize}
-                    currentPage={currentPage}
-                    onPageChange={this.handlePageChange}
-                />
-            </React.Fragment>
+            <div className="row">
+                <div className="col-3">
+                    <ListGroup
+                        items={this.state.genres}
+                        onItemSelect={this.handleGenreSelect}
+                        selectedItem={this.state.selectedGenre}
+                    />
+                </div>
+                <div className="col">
+                    <p>Showing {count} movies in the database.</p>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Genre</th>
+                                <th>Stock</th>
+                                <th>Rate</th>
+                                <th />
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { movies.map(movie => (
+                            <tr key={movie._id}>
+                                <td>{movie.title}</td>
+                                <td>{movie.genre.name}</td>
+                                <td>{movie.numberInStock}</td>
+                                <td>{movie.numberInStock}</td>
+                                <td><Like liked={movie.liked} onClick={() => this.handleLike(movie)} /></td>
+                                <button className = "btn btn-danger btn-sm"
+                                onClick={() => this.handleDelete(movie)}>Delete</button>
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <Pagnation
+                        itemsCount={count}
+                        pageSize={pageSize}
+                        currentPage={currentPage}
+                        onPageChange={this.handlePageChange}
+                    />
+                </div>
+            </div>
         )
     }
 
