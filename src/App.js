@@ -1,17 +1,17 @@
 import React, { Component } from "react";
-import NavBar from "./components/navbar";
 import { Routes, Route } from "react-router-dom";
 import Movies from "./components/movies.jsx";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/notFound";
+import NavBar from "./components/navbar";
 import './App.css';
 
 
 class App extends Component {
   render() {
     return (
-      <div>
+      <React.Fragment>
         <NavBar />
           <main className='container'>
             <Routes>
@@ -23,7 +23,7 @@ class App extends Component {
               <Route path ="/*" element = {<NotFound />} />
             </Routes>
           </main>
-      </div>
+      </React.Fragment>
 
     );
   }
