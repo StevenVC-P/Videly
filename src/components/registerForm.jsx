@@ -1,14 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Joi from 'joi-browser';
 import Form from './common/form';
 
-class RegisterForm extends Form {
-    state = {
-        data: { username: '', password: '', name: ''},
-        errors: {}
-    } 
+const RegisterForm = () => {
+    const [data, setData] = useState ({username: "", password: "", name: ""})
+    const [errors, setErrors] = useState({})
 
-    schema = {
+    const schema = {
         username: Joi.string()
             .email()
             .required()
@@ -22,22 +20,30 @@ class RegisterForm extends Form {
             .label("Name")
     };
 
-    doSubmit = () => {
+    const inputList = [
+        {name:"username", label: "Username", value: data.username},
+        {name:"password", label: "Password", value: data.password, type:"password"},
+        {name:"name", label:"Name", value: data.name}
+    ]
+
+    const doSubmit = () => {
         console.log("Submitted");
     }
 
-    render() { 
-        return (            
-        <div>
-            <h1>Register</h1>
-            <form onSubmit={this.handleSubmit}>
-                {this.renderInput('username', 'Username')}
-                {this.renderInput('password', 'Password', 'password')}
-                {this.renderInput('name', 'Name')}
-                {this.renderButton('Register')}
-            </form>
-        </div>);
-    }
+    return (            
+    <div>
+        <h1>Register</h1>
+        <Form 
+        inputList={inputList}
+        data ={data}
+        setData={setData}
+        errors={errors}
+        setErrors={setErrors}
+        schema={schema}
+        doSubmit={doSubmit}
+        label="Login"/>
+    </div>);
+    
 }
  
 export default RegisterForm;
