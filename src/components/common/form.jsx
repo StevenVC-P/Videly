@@ -1,33 +1,65 @@
 import React from 'react';
+import Joi from 'joi-browser';
 import Input from './input';
 
-const Form = ({inputList, data, setData,  doSubmit, label}) => {
+const Form = ({inputList, data, setData, errors, setErrors, schema, doSubmit, label}) => {
+
+    const validate = () => {
+        const options = { abortEarly:false }
+        const {error} = Joi.validate(data, schema, options);
+        if (!error) return null;
+        console.log("errors", data)
+        const errors = {};
+        for (let item of error.details)
+            errors[item.path[0]] = item.message
+        return errors;
+    }
+
+    const validateProperty = ({name, value}) => {
+        const obj = { [name]: value };
+        const {error} = Joi.validate(value, schema[name]);
+        console.log(obj)
+        console.log({error})
+        return error ? error.details[0].message : null;
+    }
 
     const handleSubmit = e => {
-        // will evaluate errors, and then call parent function
+        e.preventDefault();
+        
+        const errors = validate();
+        console.log(errors)
+        setErrors({errors: errors || {} });
+        if (errors) return;
         doSubmit()
     }
 
-    const handleChange = (event) => {
+    const onChange = (event) => {
         const { name, value } = event.target;
-        setData(({ ...data, [name]: value}));
+        const errorMessage = validateProperty(event.target);
+        console.log(errorMessage)
+        if (errorMessage) errors[name] = errorMessage;
+        else delete errors[name];
+
+        setErrors(({...errors,  errors}))
+        setData(data => ({ ...data, [name]: value}));
     };
 
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             {
-                inputList.map(({name, label, data, type="text", error}) =>
+                inputList.map(({name, label, value, type="text"}) =>
                 <Input
                     key={name}
+                    name={name}
                     type={type}
-                    value={data}
+                    value={value}
                     label={label}
-                    error={error}
-                    onChange={handleChange}
+                    error={errors[name]}
+                    onChange={onChange}
                 />
                 )
             }
-            <button className="btn btn-primary" onClick={() => handleSubmit()}> 
+            <button disabled={validate()} className="btn btn-primary"> 
                 {label}
             </button>  
         </form>
