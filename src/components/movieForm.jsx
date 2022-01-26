@@ -1,27 +1,20 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import Joi from 'joi-browser';
 import Form from './common/form';
-import { getMovie,saveMovie } from '../services/fakeMovieService';
-import { getGenres } from '../services/fakeGenreService';
+// import { getMovie,saveMovie } from '../services/fakeMovieService';
+// import { getGenres } from '../services/fakeGenreService';
 // import { useParams, useNavigation } from 'react-router-dom';
 
 // function withParams(Component) {
 //     return props => <Component {...props} params={useParams()} />
 // }
 
-class MovieForm extends Form {
-    state = {
-        data: { 
-            title: '', 
-            genreId: '', 
-            numberInStock: '', 
-            dailyRentalRate: ''
-        },
-        genres: [],
-        errors: {}
-    } 
+const MovieForm = () => {
+    const [data, setData] = useState ({title: "", genreId: "", numberInStock: "", dailyRentalRate: ""})
+    const [genres, setGenres] = useState([])
+    const [errors, setErrors] = useState({})
 
-    schema = {
+    const schema = {
         _id: Joi.string(),
         title: Joi.string()
             .required()
@@ -41,48 +34,72 @@ class MovieForm extends Form {
             .label("Daily Rental Rate")
     };
 
-    componentDidMount() { 
-        const genres = getGenres();
-        this.setState({genres})
+    const inputList = [
+        {name:"title", label: "Title", value: data.title},
+        {name:"genreId", label: "Genre", value: data.genreId},
+        {name:"numberInStock", label:"Stock", value: data.numberInStock},
+        {name:"dailyRentalRate", label:"Rental Rate", value: data.dailyRentalRate}
+    ]
+
+// class MovieForm extends Form {
+//     state = {
+//         data: { 
+//             title: '', 
+//             genreId: '', 
+//             numberInStock: '', 
+//             dailyRentalRate: ''
+//         },
+//         genres: [],
+//         errors: {}
+//     } 
+
+
+
+    // componentDidMount() { 
+    //     const genres = getGenres();
+    //     this.setState({genres})
         
-        const movieId = this.props.params;
-        if (movieId=== "new") return;
+    //     const movieId = this.props.params;
+    //     if (movieId=== "new") return;
 
-        const movie = getMovie(movieId);
-        if (!movie) return ("/not-found")
+    //     const movie = getMovie(movieId);
+    //     if (!movie) return ("/not-found")
 
-        this.setState({data: this.mapToViewModel(movie) });
+    //     this.setState({data: this.mapToViewModel(movie) });
+    // }
+
+    // mapToViewModel(movie) {
+    //     return {
+    //         _id: movie._id,
+    //         title: movie.title,
+    //         genreId: movie.genre._id,
+    //         numberInStock: movie.numberInStock,
+    //         dailyRentalRate: movie.dailyRentalRate
+    //     };
+    // }
+
+    const doSubmit = () => {
+        console.log("Submitted")
+        // saveMovie(this.state.data);
     }
 
-    mapToViewModel(movie) {
-        return {
-            _id: movie._id,
-            title: movie.title,
-            genreId: movie.genre._id,
-            numberInStock: movie.numberInStock,
-            dailyRentalRate: movie.dailyRentalRate
-        };
-    }
-
-    doSubmit = () => {
-        saveMovie(this.state.data);
-    }
-
-    render () {
-
-        return (
-            <div>
-                <h1>Movie Form</h1>
-                <form onSubmit={this.handleSubmit}>
-                    {this.renderInput('title', 'Title')}
-                    {this.renderInput('genre', 'Genre', this.state.genres)}
-                    {this.renderInput('numberInStock', 'Number in Stock', "number")}
-                    {this.renderInput('dailyRentalRate', 'Rate')}
-                    {this.renderButton('Save')}
-                </form>
-            </div>
-        )
-    };
+    return (
+        <div>
+            <h1>Movie Form</h1>
+            <Form 
+            inputList={inputList}
+            data ={data}
+            setData={setData}
+            genres={genres}
+            setGenres={setGenres}
+            errors={errors}
+            setErrors={setErrors}
+            schema={schema}
+            doSubmit={doSubmit}
+            label="Login"/>
+        </div>
+    )
+    
 }
  
 export default MovieForm;
