@@ -59,11 +59,12 @@ const Form = ({inputList, selectList, data, setData, genres, setGenres, errors, 
                 )
             },
                         {
-                selectList.map(({name, label, options, type="text"}) =>
+                selectList.map(({name, label, options, value, type="text"}) =>
                 <Select
                     key={name}
                     name={name}
                     options={options}
+                    value={value}
                     type={type}
                     label={label}
                     error={errors[name]}

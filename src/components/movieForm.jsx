@@ -38,13 +38,12 @@ const MovieForm = () => {
         
         const inputList = [
             {name:"title", label: "Title", value: data.title},
-            {name:"genreName", label: "Genre", value: data.genreName},
             {name:"numberInStock", label:"Stock", value: data.numberInStock},
             {name:"dailyRentalRate", label:"RentalRate", value: data.dailyRentalRate}
         ]
         
         const selectList = [
-            {name: "genreId", label: "Genre", options: genres}
+            {name: "genreId", label: "Genre", options: genres, value:data.genreName}
         ]
 
         useEffect (() => {
