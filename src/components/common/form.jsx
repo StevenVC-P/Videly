@@ -1,13 +1,18 @@
 import React from 'react';
 import Joi from 'joi-browser';
 import Input from './input';
+import Select from './select';
 
-const Form = ({inputList, data, setData, errors, setErrors, schema, doSubmit, label}) => {
+const Form = ({inputList, selectList, data, setData, genres, setGenres, errors, setErrors, schema, doSubmit, label}) => {
 
+    console.log(selectList)
+    console.log(selectList[0].options)
+    console.log(selectList[0].options.name)
     const validate = () => {
         const options = { abortEarly:false }
         const {error} = Joi.validate(data, schema, options);
         if (!error) return null;
+        console.log(error)
         const errors = {};
         for (let item of error.details)
             errors[item.path[0]] = item.message
@@ -47,6 +52,19 @@ const Form = ({inputList, data, setData, errors, setErrors, schema, doSubmit, la
                     name={name}
                     type={type}
                     value={value}
+                    label={label}
+                    error={errors[name]}
+                    onChange={onChange}
+                />
+                )
+            },
+                        {
+                selectList.map(({name, label, options, type="text"}) =>
+                <Select
+                    key={name}
+                    name={name}
+                    options={options}
+                    type={type}
                     label={label}
                     error={errors[name]}
                     onChange={onChange}
