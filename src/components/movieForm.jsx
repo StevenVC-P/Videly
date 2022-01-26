@@ -6,18 +6,21 @@ import { getGenres } from '../services/fakeGenreService';
 import { useParams, useNavigation } from 'react-router-dom';
 
 const MovieForm = () => {
-    const [data, setData] = useState ({_id: "", title: "", genreId: "", numberInStock: "", dailyRentalRate: ""})
+    const [data, setData] = useState ({_id: "", title: "", genreId:"", genreName: "", numberInStock: 0, dailyRentalRate: 0})
     const [genres, setGenres] = useState([])
     const [errors, setErrors] = useState({})
 
     const {id} = useParams()
 
     const schema = {
-        _id: Joi.string(),
+        _id: Joi.string()
+            .optional(),
         title: Joi.string()
             .required()
             .label("Title"),
         genreId: Joi.string()
+            .optional(),
+        genreName: Joi.string()
             .required()
             .label("Genre"),
         numberInStock: Joi.number()
@@ -34,7 +37,7 @@ const MovieForm = () => {
 
     const inputList = [
         {name:"title", label: "Title", value: data.title},
-        {name:"genreId", label: "Genre", value: data.genreId},
+        {name:"genreName", label: "Genre", value: data.genreName},
         {name:"numberInStock", label:"Stock", value: data.numberInStock},
         {name:"dailyRentalRate", label:"RentalRate", value: data.dailyRentalRate}
     ]
@@ -50,10 +53,12 @@ const MovieForm = () => {
     }, [id])
 
     const mapToViewModel = (movie) => {
+        console.log(movie.genre)
         return {
-            _id: movie._id,
+            _id:movie._id,
             title: movie.title,
-            genreId: movie.genre.name,
+            genreId:movie.genre._id,
+            genreName: movie.genre.name,
             numberInStock: movie.numberInStock,
             dailyRentalRate: movie.dailyRentalRate
         };
@@ -61,7 +66,8 @@ const MovieForm = () => {
 
     const doSubmit = () => {
         console.log("Submitted")
-        // saveMovie(this.state.data);
+        console.log(data)
+        saveMovie(data);
     }
 
     return (
@@ -77,7 +83,7 @@ const MovieForm = () => {
             setErrors={setErrors}
             schema={schema}
             doSubmit={doSubmit}
-            label="Login"/>
+            label="Save"/>
         </div>
     )
     
