@@ -6,7 +6,7 @@ import { getGenres } from '../services/fakeGenreService';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const MovieForm = () => {
-    const [data, setData] = useState ({_id: "", title: "", genreId:"", genreName: "", numberInStock: "", dailyRentalRate: ""})
+    const [data, setData] = useState ({_id: "", title: "", genreId:"", numberInStock: "", dailyRentalRate: ""})
     const [genres, setGenres] = useState([])
     const [errors, setErrors] = useState({})
 
@@ -15,15 +15,13 @@ const MovieForm = () => {
 
     const schema = {
         _id: Joi.string()
-            .optional(),
+            .allow(''),
         title: Joi.string()
             .required()
             .label("Title"),
         genreId: Joi.string()
-            .optional(),
-        genreName: Joi.string()
             .required()
-            .label("Genre"),
+            .label("Genre"),     
         numberInStock: Joi.number()
             .required()
             .min(0)
@@ -39,11 +37,11 @@ const MovieForm = () => {
         const inputList = [
             {name:"title", label: "Title", value: data.title},
             {name:"numberInStock", label:"Stock", value: data.numberInStock},
-            {name:"dailyRentalRate", label:"RentalRate", value: data.dailyRentalRate}
+            {name:"dailyRentalRate", label:"Rental Rate", value: data.dailyRentalRate}
         ]
         
         const selectList = [
-            {name: "genreId", label: "Genre", options: genres, value:data.genreName}
+            {name: "genreId", label: "Genre", options: genres}
         ]
 
         useEffect (() => {
@@ -62,15 +60,12 @@ const MovieForm = () => {
             _id:movie._id,
             title: movie.title,
             genreId:movie.genre._id,
-            genreName: movie.genre.name,
             numberInStock: movie.numberInStock,
             dailyRentalRate: movie.dailyRentalRate
         };
     }
     
     const doSubmit = () => {
-        // console.log("Submitted")
-        // console.log(data)
         saveMovie(data);
         navigate("/movies")
     }
@@ -83,8 +78,6 @@ const MovieForm = () => {
             selectList={selectList}
             data ={data}
             setData={setData}
-            genres={genres}
-            setGenres={setGenres}
             errors={errors}
             setErrors={setErrors}
             schema={schema}
